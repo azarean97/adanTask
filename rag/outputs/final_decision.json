@@ -1,0 +1,17 @@
+{
+  "predicted_class": "CKD",
+  "ckd_stage": "Stage 3",
+  "gfr_category": "G3 (30-59)",
+  "confidence": 0.95,
+  "clinical_rationale": "The patient has an estimated GFR of 37.4 mL/min/1.73m², which falls within the criteria for Stage 3 CKD as per KDIGO guidelines. Additionally, the presence of hypertension and diabetes mellitus further supports the diagnosis of CKD.",
+  "clinical_action_plan": [
+    "Aggressive management of hypertension to achieve target BP <130/80 mmHg.",
+    "Optimize glycemic control to reduce the risk of further kidney damage.",
+    "Monitor and manage anemia, considering erythropoiesis-stimulating agents if hemoglobin levels remain low.",
+    "Regular follow-up for renal function and complications associated with CKD."
+  ],
+  "evidence_citations": [
+    "p39_elem_0",
+    "p40_elem_0"
+  ]
+}

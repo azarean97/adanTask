@@ -1,0 +1,12 @@
+# secrets
+.env
+
+# python / local
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# runtime files (re-created automatically)
+nl2sql_agent/logs/
+nl2sql_agent/data_cache/imdb_small.sqlite

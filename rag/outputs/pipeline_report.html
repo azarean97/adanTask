@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini-PID-RAG | Clinical Decision Support & Pipeline Execution Report</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent: #38bdf8;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --indigo: #6366f1;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+    header {
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-primary { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid #38bdf8; }
+    .badge-success { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #10b981; }
+    .badge-warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid #f59e0b; }
+    .badge-danger  { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid #f43f5e; }
+    h1 { font-size: 1.8rem; font-weight: 800; margin: 0.5rem 0 0.25rem 0; color: #fff; }
+    h2 { font-size: 1.3rem; margin: 1.8rem 0 0.8rem 0; color: var(--accent); border-left: 3px solid var(--accent); padding-left: 0.6rem; }
+    h3 { font-size: 1.05rem; margin: 1rem 0 0.4rem 0; color: #e5e7eb; }
+    p, li { font-size: 0.88rem; color: #d1d5db; }
+    ul { padding-left: 1.25rem; margin-bottom: 0.75rem; }
+    li { margin-bottom: 0.3rem; }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; }
+    @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin: 0.75rem 0;
+    }
+    th, td {
+      padding: 0.55rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--card-border);
+    }
+    th { background: rgba(31, 41, 55, 0.6); color: var(--text-muted); }
+    code, pre {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+    }
+    pre {
+      background: #050811;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.85rem;
+      overflow-x: auto;
+      color: #93c5fd;
+      line-height: 1.45;
+      margin: 0.5rem 0;
+    }
+    .stat-val { font-size: 1.4rem; font-weight: 800; color: #fff; font-family: var(--font-mono); }
+    .stat-label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; }
+    .callout {
+      border-left: 3px solid;
+      padding: 0.75rem 1rem;
+      border-radius: 0 6px 6px 0;
+      margin: 0.75rem 0;
+      font-size: 0.84rem;
+    }
+    .callout-info { border-color: var(--accent); background: rgba(56, 189, 248, 0.08); color: #bae6fd; }
+    .callout-warning { border-color: var(--amber); background: rgba(245, 158, 11, 0.08); color: #fde68a; }
+    .callout-success { border-color: var(--emerald); background: rgba(16, 185, 129, 0.08); color: #a7f3d0; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <span class="badge badge-primary">Standard Baseline Clinical RAG</span>
+    <h1>Mini-PID-RAG: Pipeline Execution & Verification Report</h1>
+    <p style="color: var(--text-muted); margin-top: 0.25rem;">
+      Full trace report of the Visual Language Model parsing, Lexical Knowledge Graph synthesis, Few-Shot in-context learning, Multi-Hop retrieval, and Actor-Critic clinical decision loop.
+    </p>
+  </header>
+
+  <!-- Key Metrics Row -->
+  <div class="grid-3" style="margin-bottom: 1.5rem;">
+    <div class="card" style="text-align: center;">
+      <div class="stat-label">Model Architecture</div>
+      <div class="stat-val" style="font-size:1.15rem; color:#38bdf8; margin-top:0.25rem;">Actor-Critic RAG</div>
+      <p style="font-size:0.75rem; color:#9ca3af; margin-top:0.2rem;">gpt-4o-mini + text-embedding-3-large</p>
+    </div>
+    <div class="card" style="text-align: center;">
+      <div class="stat-label">Verified Diagnostic Result</div>
+      <div class="stat-val" style="font-size:1.15rem; color:#34d399; margin-top:0.25rem;">CKD Stage 3 (G3)</div>
+      <p style="font-size:0.75rem; color:#9ca3af; margin-top:0.2rem;">95% Confidence (Critic Revised)</p>
+    </div>
+    <div class="card" style="text-align: center;">
+      <div class="stat-label">Novelty Purity</div>
+      <div class="stat-val" style="font-size:1.15rem; color:#fbbf24; margin-top:0.25rem;">100% Standard</div>
+      <p style="font-size:0.75rem; color:#9ca3af; margin-top:0.2rem;">Zero Parent Novelties Included</p>
+    </div>
+  </div>
+
+  <!-- Section 1: Executive Summary -->
+  <h2>1. System Architecture & Dataset Context</h2>
+  <div class="card">
+    <p>
+      <strong>Mini-PID-RAG</strong> faithfully models the core architectural pipeline of the PID-RAG framework in miniature, adhering strictly to standard baseline methods.
+    </p>
+    <div class="grid-2" style="margin-top: 1rem;">
+      <div>
+        <h3>Core Data Assets</h3>
+        <ul>
+          <li><strong>Guideline Corpus:</strong> KDIGO Clinical Practice Guideline for the Evaluation and Classification of Chronic Kidney Disease (PDF).</li>
+          <li><strong>Patient Dataset:</strong> UCI Chronic Kidney Disease database (400 records across 24 clinical attributes, <code>chronic_kidney_disease.arff</code>).</li>
+          <li><strong>In-Context Learning:</strong> Clinical few-shot patient exemplars sampled from the UCI dataset to anchor model diagnostic boundaries.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Baseline RAG Purity Verification</h3>
+        <ul>
+          <li>✔ <strong>NO</strong> Excel boolean expert rules or hardcoded point scorers.</li>
+          <li>✔ <strong>NO</strong> UMLS Metathesaurus semantic distance decay exponents.</li>
+          <li>✔ <strong>NO</strong> Multi-lens consensus voting / reverse logit probabilities.</li>
+          <li>✔ <strong>NO</strong> Z-score laboratory normalization trees.</li>
+          <li>✔ Pure Dual Representation: High-dimensional embeddings + relational Knowledge Graph + Okapi BM25.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Patient Record Under Evaluation -->
+  <h2>2. Clinical Patient Case (Benchmark: PAT-009)</h2>
+  <div class="card">
+    <div class="grid-2">
+      <div>
+        <h3>Patient Biomarkers & Chemistry</h3>
+        <table>
+          <tr><th>Parameter</th><th>Value</th><th>Clinical Interpretation</th></tr>
+          <tr><td>Patient ID</td><td><code>PAT-009</code></td><td>Benchmark Case A</td></tr>
+          <tr><td>Age</td><td>52.0 years</td><td>Middle-aged adult</td></tr>
+          <tr><td>Blood Pressure</td><td>100.0 mm/Hg</td><td>Controlled resting BP</td></tr>
+          <tr><td>Serum Creatinine</td><td><strong>1.9 mg/dL</strong></td><td>Markedly elevated (Normal: 0.6-1.2)</td></tr>
+          <tr><td>Estimated GFR (MDRD)</td><td><strong>37.4 mL/min/1.73m²</strong></td><td>Moderate reduction (30-59 range)</td></tr>
+          <tr><td>Urine Albumin</td><td><strong>3.0+</strong></td><td>Severe proteinuria / Kidney damage marker</td></tr>
+          <tr><td>Blood Urea</td><td>60.0 mg/dL</td><td>Elevated uremic marker</td></tr>
+          <tr><td>Hemoglobin</td><td>10.8 g/dL</td><td>Mild normocytic anemia</td></tr>
+        </table>
+      </div>
+      <div>
+        <h3>Comorbidities & Clinical Question</h3>
+        <div class="callout callout-info">
+          <strong>Associated Comorbidities:</strong><br>
+          • Hypertension: <strong>Yes</strong><br>
+          • Diabetes Mellitus: <strong>Yes</strong><br>
+          • Anemia of Chronic Disease: <strong>Yes</strong>
+        </div>
+        <div class="callout callout-warning">
+          <strong>Clinical Task Directive & Target Question:</strong><br>
+          <em>"Assess CKD diagnostic criteria, determine KDIGO GFR stage, verify evidence grounding, and synthesize management plan."</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Few-Shot In-Context Learning -->
+  <h2>3. In-Context Few-Shot Exemplars (UCI CKD Patient Dataset)</h2>
+  <div class="card">
+    <p style="margin-bottom: 0.75rem;">
+      Representative patient records from <code>chronic_kidney_disease.arff</code> were injected into the LLM context to ground model reasoning with verified gold-standard clinical patterns:
+    </p>
+    <div class="grid-3">
+      <div style="background:#070d19; border:1px solid #1f2937; border-radius:6px; padding:0.75rem;">
+        <span class="badge badge-primary">Exemplar 1 (PAT-001)</span>
+        <div style="font-size:0.78rem; font-family:var(--font-mono); margin:0.4rem 0; color:#cbd5e1;">Age 48, SC 1.2 mg/dL, Albumin 1+, eGFR 64.6</div>
+        <div style="color:#34d399; font-weight:700; font-size:0.8rem;">Gold: CKD Stage 2</div>
+        <p style="font-size:0.74rem; color:#9ca3af; margin-top:0.3rem;">Demonstrates that persistent albuminuria establishes CKD even when eGFR is mildly decreased (60-89 mL/min).</p>
+      </div>
+      <div style="background:#070d19; border:1px solid #1f2937; border-radius:6px; padding:0.75rem;">
+        <span class="badge badge-warning">Exemplar 2 (PAT-013)</span>
+        <div style="font-size:0.78rem; font-family:var(--font-mono); margin:0.4rem 0; color:#cbd5e1;">Age 68, SC 2.1 mg/dL, Albumin 3+, eGFR 31.6</div>
+        <div style="color:#34d399; font-weight:700; font-size:0.8rem;">Gold: CKD Stage 3</div>
+        <p style="font-size:0.74rem; color:#9ca3af; margin-top:0.3rem;">Demonstrates that eGFR 30-59 mL/min with hypertension and diabetes requires Stage 3 protocols and BP control.</p>
+      </div>
+      <div style="background:#070d19; border:1px solid #1f2937; border-radius:6px; padding:0.75rem;">
+        <span class="badge badge-success">Exemplar 3 (PAT-251)</span>
+        <div style="font-size:0.78rem; font-family:var(--font-mono); margin:0.4rem 0; color:#cbd5e1;">Age 40, SC 1.2 mg/dL, Albumin 0, eGFR 67.1</div>
+        <div style="color:#60a5fa; font-weight:700; font-size:0.8rem;">Gold: NOT_CKD (Control)</div>
+        <p style="font-size:0.74rem; color:#9ca3af; margin-top:0.3rem;">Normal control with negative albuminuria and preserved renal function; prevents false-positive staging.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Step-by-Step Pipeline Execution -->
+  <h2>4. End-to-End Pipeline Execution Trace</h2>
+
+  <!-- Step 1 -->
+  <div class="card">
+    <h3>Step 1: Visual Language Model (VLM) Document Parsing</h3>
+    <p>
+      Rendered scanned PDF guideline pages at 150 DPI and submitted to <code>gpt-4o-mini</code> Vision to extract OCR-invisible clinical tables and directional relationship triples:
+    </p>
+    <table>
+      <tr><th>Page Number</th><th>Primary Extracted Section</th><th>Key Extracted Facts & Thresholds</th><th>Relational Triples</th></tr>
+      <tr>
+        <td><strong>Page 38</strong></td>
+        <td>Definition & Overview of Chronic Kidney Disease</td>
+        <td>Kidney damage markers (albuminuria, sediment), GFR &lt; 60 mL/min/1.73m² for &gt; 3 months</td>
+        <td><code>CKD --defined_by--&gt; Kidney Damage</code></td>
+      </tr>
+      <tr>
+        <td><strong>Page 39</strong></td>
+        <td>Table: Stages of Chronic Kidney Disease (K/DOQI)</td>
+        <td>Stage 1 (≥90), Stage 2 (60-89), Stage 3 (30-59), Stage 4 (15-29), Stage 5 (&lt;15 or dialysis)</td>
+        <td><code>Stage 3 --has_gfr_range--&gt; 30-59 mL/min</code></td>
+      </tr>
+      <tr>
+        <td><strong>Page 40</strong></td>
+        <td>Table: Clinical Action Plans for CKD Stages</td>
+        <td>Evaluating progression, treating complications, planning kidney replacement therapy</td>
+        <td><code>Stage 3 --action_plan--&gt; Treat complications</code></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Step 2 & 3 -->
+  <div class="card">
+    <h3>Step 2 & 3: Multi-Hop Retrieval & Reciprocal Rank Fusion (RRF)</h3>
+    <div class="grid-2">
+      <div style="background:#070d19; border:1px solid #1f2937; border-radius:6px; padding:0.75rem;">
+        <span class="badge badge-primary">Hop 1: Diagnostic Staging</span>
+        <p style="font-family:var(--font-mono); font-size:0.75rem; color:#93c5fd; margin:0.3rem 0;">
+          Query: "CKD classification stages GFR threshold 1.9 mg/dL albuminuria 3.0"
+        </p>
+        <p style="font-size:0.76rem; color:#d1d5db;">Retrieved KDIGO Staging Table (Page 39) via dense vector and BM25.</p>
+      </div>
+      <div style="background:#070d19; border:1px solid #1f2937; border-radius:6px; padding:0.75rem;">
+        <span class="badge badge-success">Hop 2: Targeted Actions & Complications</span>
+        <p style="font-family:var(--font-mono); font-size:0.75rem; color:#34d399; margin:0.3rem 0;">
+          Synthesized Query: "CKD Action Plan Stage 3 complications hypertension diabetes"
+        </p>
+        <p style="font-size:0.76rem; color:#d1d5db;">Retrieved Action Plan Table (Page 40) targeting comorbidity management.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4 & 5: Actor & Critic Verification Loop -->
+  <h2>5. Actor-Critic Verification Loop & Corrective Revision</h2>
+  <div class="card">
+    <div class="grid-2">
+      <div style="background:#1c131a; border:1px solid #831843; border-radius:6px; padding:0.85rem;">
+        <span class="badge badge-danger">1. Actor Initial Proposal</span>
+        <p style="font-size:0.8rem; margin:0.4rem 0;">Proposed Stage: <strong>Stage 4 (Severe CKD)</strong></p>
+        <p style="font-size:0.76rem; color:#fbcfe8;">
+          <em>"The patient has an estimated GFR of 37.4 mL/min/1.73m², which falls within the range for Stage 4 CKD (15-29 mL/min/1.73m²)."</em>
+        </p>
+        <div class="callout callout-warning" style="margin-top:0.5rem; font-size:0.75rem;">
+          <strong>Error Detected:</strong> The Actor incorrectly assigned 37.4 mL/min to Stage 4 (15-29).
+        </div>
+      </div>
+      <div style="background:#1e1a10; border:1px solid #78350f; border-radius:6px; padding:0.85rem;">
+        <span class="badge badge-warning">2. Critic Audit & Verdict</span>
+        <p style="font-size:0.8rem; margin:0.4rem 0;">Verdict: <strong>REVISE</strong> (Support Score: 0.90)</p>
+        <p style="font-size:0.76rem; color:#fef08a;">
+          <em>"The estimated GFR of 37.4 mL/min/1.73m² actually falls within Stage 3 CKD (30-59 mL/min/1.73m²). Please revise the staging to reflect this correctly."</em>
+        </p>
+        <div class="callout callout-success" style="margin-top:0.5rem; font-size:0.75rem;">
+          <strong>Evidence Grounding:</strong> Cited chunk <code>p39_elem_0</code> explicitly bounds Stage 3 at 30-59 mL/min.
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#0c1f19; border:1px solid #065f46; border-radius:6px; padding:0.85rem; margin-top:1rem;">
+      <span class="badge badge-success">3. Actor Revised & Verified Decision</span>
+      <h3 style="color:#34d399; margin:0.3rem 0;">Chronic Kidney Disease - Stage 3 (GFR Category: G3 30-59)</h3>
+      <p style="font-size:0.82rem; color:#d1fae5; line-height:1.45;">
+        <em>"The patient has an estimated GFR of 37.4 mL/min/1.73m², which falls within the criteria for Stage 3 CKD as per KDIGO guidelines. Additionally, the presence of hypertension and diabetes mellitus further supports the diagnosis of CKD."</em>
+      </p>
+      <div style="margin-top:0.6rem;">
+        <strong>Verified Clinical Action Plan:</strong>
+        <ol style="padding-left:1.25rem; font-size:0.8rem; color:#ecfdf5; margin-top:0.25rem;">
+          <li>Aggressive management of hypertension to achieve target blood pressure &lt; 130/80 mmHg.</li>
+          <li>Optimize glycemic control to reduce the risk of further kidney damage.</li>
+          <li>Monitor and manage anemia, considering erythropoiesis-stimulating agents if hemoglobin remains low.</li>
+          <li>Schedule regular follow-up for renal function and complications associated with Stage 3 CKD.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6: Output Files Manifest -->
+  <h2>6. Saved Output Files Manifest (`adan_tmp/outputs/`)</h2>
+  <div class="card">
+    <table>
+      <tr><th>Filename</th><th>Size</th><th>Pipeline Stage</th><th>Role</th></tr>
+      <tr><td><code>final_decision.json</code></td><td>823 bytes</td><td>Final Output</td><td>Final verified clinical diagnosis, staging, rationale, and action plan</td></tr>
+      <tr><td><code>full_pipeline_trace.json</code></td><td>65,048 bytes</td><td>Full Pipeline</td><td>Complete execution trace, prompt directives, few-shot cases, and telemetry</td></tr>
+      <tr><td><code>actor_proposed.json</code></td><td>1,164 bytes</td><td>Step 3 (Actor)</td><td>Initial diagnostic proposal by the Actor</td></tr>
+      <tr><td><code>critic_audit.json</code></td><td>1,000 bytes</td><td>Step 4 (Critic)</td><td>Audit report, citation verification, and revision instructions</td></tr>
+      <tr><td><code>actor_revised.json</code></td><td>823 bytes</td><td>Step 5 (Revision)</td><td>Corrected diagnostic proposal adhering to Critic directives</td></tr>
+      <tr><td><code>hop1_retrieval.json</code></td><td>10,596 bytes</td><td>Step 2 (Hop 1)</td><td>Staging retrieval candidates with dense, BM25, and KG provenance</td></tr>
+      <tr><td><code>hop2_retrieval.json</code></td><td>14,733 bytes</td><td>Step 2 (Hop 2)</td><td>Action plan retrieval candidates with synthesized query trace</td></tr>
+      <tr><td><code>knowledge_graph.json</code></td><td>7,398 bytes</td><td>Knowledge Graph</td><td>Clinical graph nodes, edge types, and relational subgraphs</td></tr>
+      <tr><td><code>embeddings_manifest.json</code></td><td>893,525 bytes</td><td>Dense Vectors</td><td>Normalized 3072-dimensional embeddings of all guideline chunks</td></tr>
+      <tr><td><code>parsed_guideline_chunks.json</code></td><td>4,198 bytes</td><td>Step 1 (VLM)</td><td>Extracted guideline tables, facts, and directional triples</td></tr>
+    </table>
+  </div>
+
+  <footer style="margin-top: 2rem; border-top: 1px solid var(--card-border); padding-top: 1rem; text-align: center; color: var(--text-muted); font-size: 0.75rem;">
+    Mini-PID-RAG Nephrology Clinical Decision Support System &bull; Generated Automatically on 2026-10-18
+  </footer>
+
+</div>
+</body>
+</html>

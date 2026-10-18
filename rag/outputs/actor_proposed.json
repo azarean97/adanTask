@@ -1,0 +1,19 @@
+{
+  "predicted_class": "CKD",
+  "ckd_stage": "Stage 4",
+  "gfr_category": "G4 (15-29)",
+  "confidence": 0.95,
+  "clinical_rationale": "The patient has an estimated GFR of 37.4 mL/min/1.73m², which falls within the range for Stage 4 CKD (15-29 mL/min/1.73m²). Additionally, the presence of hypertension and diabetes further supports the diagnosis of CKD as these are significant risk factors. The patient's urine albumin level of 3.0+ indicates kidney damage, confirming the CKD diagnosis as per KDIGO guidelines.",
+  "clinical_action_plan": [
+    "Initiate management of hypertension aiming for a target BP <130/80 mmHg, possibly using ACE inhibitors or ARBs.",
+    "Optimize diabetes management to maintain HbA1c <7% and monitor renal function regularly.",
+    "Address anemia with erythropoiesis-stimulating agents (ESAs) and iron supplementation as needed.",
+    "Monitor electrolytes and consider dietary modifications to manage potassium and phosphorus levels.",
+    "Prepare for potential renal replacement therapy (dialysis or transplant) as GFR declines further."
+  ],
+  "evidence_citations": [
+    "p39_elem_0",
+    "p40_elem_0",
+    "p38_summary"
+  ]
+}

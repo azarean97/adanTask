@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineAgent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="mode-sql">
+
+  <!-- ============ Header ============ -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo">
+        <span class="logo-icon">🎬</span>
+        <div>
+          <h1>CineAgent</h1>
+          <span class="subtitle">IMDB database + Cinema Studies book</span>
+        </div>
+      </div>
+
+      <!-- The two parts of the project -->
+      <nav class="mode-switch">
+        <button class="mode-btn active" data-mode="sql">🗄 NL2SQL<small>ask the database</small></button>
+        <button class="mode-btn" data-mode="agent">🤖 Agent &amp; Router<small>sub-agents + tools</small></button>
+      </nav>
+    </div>
+    <div class="header-right">
+      <div class="model-tags" id="model-tags"></div>
+      <span class="badge badge-amber" id="spent-badge">$0.0000</span>
+      <button class="btn btn-secondary" id="btn-prompts">✎ Edit Prompts</button>
+      <div class="system-status"><span class="status-dot"></span><span id="status-label">Ready</span></div>
+    </div>
+  </header>
+
+  <!-- =====================================================================
+       PART 1 - NL2SQL: question -> SQL -> guard -> result
+       ===================================================================== -->
+  <main class="main-layout view active" id="view-sql">
+    <aside class="sidebar">
+      <div class="card">
+        <div class="card-header"><h3>🗄 Ask the database</h3><span class="badge badge-accent">NL → SQL</span></div>
+        <textarea id="sql-question" rows="4" placeholder="e.g. Which movies were released after 2000 and have a rank above 8?"></textarea>
+        <button class="btn btn-primary btn-run" id="sql-run">
+          <span class="spinner"></span><span class="btn-text">Generate &amp; run SQL</span>
+        </button>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>📋 Tables</h3><span class="badge badge-accent">SQLite</span></div>
+        <div id="sql-tables-mini"></div>
+      </div>
+    </aside>
+
+    <section class="workspace">
+      <div class="flow">
+        <div class="flow-node" data-node="question">❓<span>Question</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node" data-node="generate">🧠<span>LLM writes SQL</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node" data-node="guard">🛡<span>SQL Guard</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node" data-node="repair">🔧<span>Repair (if error)</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node" data-node="result">📊<span>Result</span></div>
+      </div>
+
+      <nav class="tabs">
+        <button class="tab active" data-tab="sql-result"><span class="tab-num">★</span>Result</button>
+        <button class="tab" data-tab="sql-schema"><span class="tab-num">🗄</span>Schema given to LLM</button>
+        <button class="tab" data-tab="sql-guard"><span class="tab-num">🛡</span>SQL Guard Lab</button>
+      </nav>
+
+      <div class="panes">
+        <div class="pane active" id="pane-sql-result">
+          <div class="empty" id="sql-empty">
+            <div class="empty-icon">🗄</div>
+            <h3>Ask a question about movies, actors, directors or genres</h3>
+            <p>The LLM writes the SQL, the guard checks it, and only then it runs (read-only).</p>
+          </div>
+          <div id="sql-box" class="hidden">
+            <div class="hero">
+              <span class="hero-label">QUESTION</span>
+              <h2 id="sql-q"></h2>
+              <div class="chips" id="sql-chips"></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>💬 Answer</h3></div>
+              <div class="answer-text" id="sql-answer"></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>🧠 Generated SQL &amp; validation</h3></div>
+              <div id="sql-attempts"></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>📊 Query result</h3><span class="badge badge-accent" id="sql-rowcount"></span></div>
+              <div id="sql-table"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pane" id="pane-sql-schema">
+          <div class="card">
+            <div class="card-header"><h3>🗄 Schema design</h3><span class="badge badge-accent">from imdb_small.sql</span></div>
+            <div class="schema-grid" id="schema-tables"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>👁 Exact text the LLM sees</h3><span class="badge badge-accent">{schema}</span></div>
+            <p class="desc">Columns with meaning, join paths, sample rows and known values (genres, gender).</p>
+            <pre class="code" id="schema-context"></pre>
+          </div>
+        </div>
+
+        <div class="pane" id="pane-sql-guard">
+          <div class="card">
+            <div class="card-header"><h3>🛡 SQL Guard Lab</h3><span class="badge badge-rose">no LLM · free</span></div>
+            <p class="desc">Send any SQL straight to the guard and see which layer accepts or blocks it:
+              static check → EXPLAIN dry run → authorizer (read-only) → execution limits.</p>
+            <div class="chip-row" id="guard-presets"></div>
+            <textarea id="guard-sql" rows="3" class="mono">SELECT name, year, rank FROM movies WHERE rank > 8 ORDER BY rank DESC</textarea>
+            <button class="btn btn-primary" id="guard-run">Run through guard</button>
+            <div id="guard-out"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =====================================================================
+       PART 2 - Agent & Router: coordinator -> sub-agent -> calculator tool
+       ===================================================================== -->
+  <main class="main-layout view" id="view-agent">
+    <aside class="sidebar">
+      <div class="card">
+        <div class="card-header"><h3>🤖 Ask the assistant</h3><span class="badge badge-accent">Agentic</span></div>
+        <textarea id="agent-question" rows="4" placeholder="e.g. What percentage of all movies are Drama movies?  /  What does auteur theory mean?"></textarea>
+
+        <label class="label">Sub-agent selection</label>
+        <div class="segmented" id="agent-mode">
+          <button data-agent="auto" class="active">🧭 Auto</button>
+          <button data-agent="database">🗄 Database</button>
+          <button data-agent="document">📄 Document</button>
+        </div>
+
+        <button class="btn btn-primary btn-run" id="agent-run">
+          <span class="spinner"></span><span class="btn-text">Run Agent</span>
+        </button>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>🧩 Components</h3></div>
+        <div class="legend">
+          <div><span class="badge badge-indigo">Coordinator</span> picks a sub-agent</div>
+          <div><span class="badge badge-cyan">Database Agent</span> NL2SQL</div>
+          <div><span class="badge badge-emerald">Document Agent</span> book RAG</div>
+          <div><span class="badge badge-amber">calculator</span> tool calling</div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="workspace">
+      <div class="flow">
+        <div class="flow-node" data-node="question">❓<span>Question</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node" data-node="router">🧭<span>Coordinator</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-branch">
+          <div class="flow-node" data-node="database">🗄<span>Database Agent</span></div>
+          <div class="flow-node" data-node="document">📄<span>Document Agent</span></div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-branch">
+          <div class="flow-node" data-node="sql">🛡<span>SQL Guard</span></div>
+          <div class="flow-node" data-node="retrieval">🔎<span>Retriever</span></div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node" data-node="tool">🧮<span>Calculator</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node" data-node="answer">✅<span>Answer</span></div>
+      </div>
+
+      <nav class="tabs">
+        <button class="tab active" data-tab="agent-answer"><span class="tab-num">★</span>Answer</button>
+        <button class="tab" data-tab="agent-router"><span class="tab-num">1</span>Router</button>
+        <button class="tab" data-tab="agent-sql"><span class="tab-num">2</span>Database Agent</button>
+        <button class="tab" data-tab="agent-chunks"><span class="tab-num">2</span>Document Agent</button>
+        <button class="tab" data-tab="agent-tools"><span class="tab-num">3</span>Tools</button>
+        <button class="tab" data-tab="agent-trace"><span class="tab-num">🧾</span>Full Trace</button>
+        <span class="tab-sep"></span>
+        <button class="tab" data-tab="agent-docs"><span class="tab-num">📚</span>Document Index</button>
+        <button class="tab" data-tab="agent-logs"><span class="tab-num">📜</span>Logs</button>
+      </nav>
+
+      <div class="panes">
+        <div class="pane active" id="pane-agent-answer">
+          <div class="empty" id="agent-empty">
+            <div class="empty-icon">🤖</div>
+            <h3>The coordinator decides who answers</h3>
+            <p>Database questions go to the Database Agent, film-theory questions to the Document Agent.
+              Either one can call the calculator tool.</p>
+          </div>
+          <div id="agent-box" class="hidden">
+            <div class="hero">
+              <span class="hero-label">QUESTION</span>
+              <h2 id="agent-q"></h2>
+              <div class="chips" id="agent-chips"></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>✅ Final answer</h3><span class="badge badge-emerald" id="agent-who"></span></div>
+              <div class="answer-text" id="agent-answer"></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><h3>🧾 What ran</h3></div>
+              <div id="agent-mini-trace"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pane" id="pane-agent-router">
+          <div class="card">
+            <div class="card-header"><h3>🧭 Coordinator decision</h3><span class="badge badge-indigo">1 LLM call</span></div>
+            <p class="desc">One LLM call returns JSON: which sub-agent, whether a calculation is needed, and whether it is a write request (refused).</p>
+            <div id="router-out" class="muted">Run a question first.</div>
+          </div>
+        </div>
+
+        <div class="pane" id="pane-agent-sql">
+          <div class="card">
+            <div class="card-header"><h3>🗄 Database Agent</h3><span class="badge badge-cyan">NL2SQL + guard</span></div>
+            <div id="agent-sql-out" class="muted">The Database Agent did not run in the last request.</div>
+          </div>
+        </div>
+
+        <div class="pane" id="pane-agent-chunks">
+          <div class="card">
+            <div class="card-header"><h3>📄 Document Agent · dense retrieval</h3><span class="badge badge-emerald">text-embedding-3-large</span></div>
+            <p class="desc">Question embedding vs every book chunk (cosine similarity) → top 4 go to the LLM.</p>
+            <div id="chunks-out" class="muted">The Document Agent did not run in the last request.</div>
+          </div>
+        </div>
+
+        <div class="pane" id="pane-agent-tools">
+          <div class="card">
+            <div class="card-header"><h3>🧮 Calculator tool calls</h3><span class="badge badge-amber">function calling</span></div>
+            <p class="desc">The agent asks for <code>calculator(expression)</code>, the server evaluates it safely and returns the number.</p>
+            <div id="tools-out" class="muted">No tool was called in the last request.</div>
+          </div>
+        </div>
+
+        <div class="pane" id="pane-agent-trace">
+          <div class="card">
+            <div class="card-header"><h3>🧾 Step-by-step trace</h3><span class="badge badge-indigo" id="trace-sum"></span></div>
+            <p class="desc">Click a step to see its input and output.</p>
+            <div id="trace-out" class="muted">Run a question first.</div>
+          </div>
+        </div>
+
+        <div class="pane" id="pane-agent-docs">
+          <div class="card">
+            <div class="card-header"><h3>📚 Indexed book chunks</h3><span class="badge badge-emerald" id="docs-count"></span></div>
+            <p class="desc">"Cinema Studies: The Key Concepts", book pages 1-30, 900-character chunks with 150 overlap.</p>
+            <div id="docs-out"></div>
+          </div>
+        </div>
+
+        <div class="pane" id="pane-agent-logs">
+          <div class="card">
+            <div class="card-header"><h3>📜 Request log</h3><button class="btn btn-sm" id="logs-refresh">↻ Refresh</button></div>
+            <p class="desc">Saved to <code>logs/requests.jsonl</code> - which sub-agent and tools ran for each request.</p>
+            <div id="logs-out"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ Prompt editor modal ============ -->
+  <div class="modal hidden" id="modal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>✎ System prompts</h3>
+        <button class="btn btn-sm" id="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="prompt-list" id="prompt-list"></div>
+        <div class="prompt-edit">
+          <div class="prompt-hint" id="prompt-hint"></div>
+          <textarea id="prompt-text" class="mono"></textarea>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-secondary" id="prompts-reset">Reset all to defaults</button>
+        <button class="btn btn-primary" id="prompts-save">Save prompts</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

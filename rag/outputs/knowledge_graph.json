@@ -1,0 +1,323 @@
+{
+  "nodes": [
+    {
+      "id": "Stage 1",
+      "label": "Stage 1 (Normal/High GFR >= 90 with Kidney Damage)",
+      "type": "Stage",
+      "properties": {}
+    },
+    {
+      "id": "Stage 2",
+      "label": "Stage 2 (Mild GFR 60-89 with Kidney Damage)",
+      "type": "Stage",
+      "properties": {}
+    },
+    {
+      "id": "Stage 3",
+      "label": "Stage 3 (Moderate GFR 30-59)",
+      "type": "Stage",
+      "properties": {}
+    },
+    {
+      "id": "Stage 4",
+      "label": "Stage 4 (Severe GFR 15-29)",
+      "type": "Stage",
+      "properties": {}
+    },
+    {
+      "id": "Stage 5",
+      "label": "Stage 5 (Kidney Failure GFR < 15 / Dialysis)",
+      "type": "Stage",
+      "properties": {}
+    },
+    {
+      "id": "Serum Creatinine",
+      "label": "Serum Creatinine (sc)",
+      "type": "Biomarker",
+      "properties": {}
+    },
+    {
+      "id": "eGFR",
+      "label": "Estimated Glomerular Filtration Rate",
+      "type": "Measure",
+      "properties": {}
+    },
+    {
+      "id": "Albuminuria",
+      "label": "Albumin in Urine (al)",
+      "type": "DamageMarker",
+      "properties": {}
+    },
+    {
+      "id": "Hypertension",
+      "label": "Hypertension (htn)",
+      "type": "Comorbidity",
+      "properties": {}
+    },
+    {
+      "id": "Diabetes Mellitus",
+      "label": "Diabetes Mellitus (dm)",
+      "type": "Etiology",
+      "properties": {}
+    },
+    {
+      "id": "Anemia",
+      "label": "Anemia / Low Hemoglobin (hemo)",
+      "type": "Complication",
+      "properties": {}
+    },
+    {
+      "id": "Blood Urea",
+      "label": "Blood Urea (bu)",
+      "type": "Biomarker",
+      "properties": {}
+    },
+    {
+      "id": "CVD Risk Reduction",
+      "label": "Cardiovascular Disease Risk Reduction",
+      "type": "Action",
+      "properties": {}
+    },
+    {
+      "id": "Slow Progression",
+      "label": "Slowing Progression of Kidney Disease",
+      "type": "Action",
+      "properties": {}
+    },
+    {
+      "id": "Manage Complications",
+      "label": "Evaluating & Treating Complications",
+      "type": "Action",
+      "properties": {}
+    },
+    {
+      "id": "Nephrology Referral",
+      "label": "Referral to Nephrologist",
+      "type": "Action",
+      "properties": {}
+    },
+    {
+      "id": "Dialysis Preparation",
+      "label": "Vascular Access & Dialysis Preparation",
+      "type": "Action",
+      "properties": {}
+    },
+    {
+      "id": "Kidney Replacement",
+      "label": "Kidney Replacement Therapy",
+      "type": "Action",
+      "properties": {}
+    },
+    {
+      "id": "eGFR < 15",
+      "label": "eGFR < 15",
+      "type": "Concept",
+      "properties": {}
+    },
+    {
+      "id": "eGFR 15-29",
+      "label": "eGFR 15-29",
+      "type": "Concept",
+      "properties": {}
+    },
+    {
+      "id": "eGFR 30-59",
+      "label": "eGFR 30-59",
+      "type": "Concept",
+      "properties": {}
+    },
+    {
+      "id": "eGFR 60-89",
+      "label": "eGFR 60-89",
+      "type": "Concept",
+      "properties": {}
+    },
+    {
+      "id": "eGFR >= 90",
+      "label": "eGFR >= 90",
+      "type": "Concept",
+      "properties": {}
+    },
+    {
+      "id": "Chronic Kidney Disease",
+      "label": "Chronic Kidney Disease",
+      "type": "Concept",
+      "properties": {}
+    },
+    {
+      "id": "Stages of CKD",
+      "label": "Stages of CKD",
+      "type": "Concept",
+      "properties": {}
+    },
+    {
+      "id": "Chronic kidney disease",
+      "label": "Chronic kidney disease",
+      "type": "Concept",
+      "properties": {}
+    },
+    {
+      "id": "kidney damage or GFR < 60 mL/min/1.73 m\u00b2 for 3 months",
+      "label": "kidney damage or GFR < 60 mL/min/1.73 m\u00b2 for 3 months",
+      "type": "Concept",
+      "properties": {}
+    },
+    {
+      "id": "Individuals at increased risk",
+      "label": "Individuals at increased risk",
+      "type": "Concept",
+      "properties": {}
+    },
+    {
+      "id": "testing for markers of kidney damage",
+      "label": "testing for markers of kidney damage",
+      "type": "Concept",
+      "properties": {}
+    },
+    {
+      "id": "Individuals found to have CKD",
+      "label": "Individuals found to have CKD",
+      "type": "Concept",
+      "properties": {}
+    },
+    {
+      "id": "evaluation and treatment as specified in Guideline 2",
+      "label": "evaluation and treatment as specified in Guideline 2",
+      "type": "Concept",
+      "properties": {}
+    },
+    {
+      "id": "program of risk factor reduction",
+      "label": "program of risk factor reduction",
+      "type": "Concept",
+      "properties": {}
+    }
+  ],
+  "links": [
+    {
+      "source": "Serum Creatinine",
+      "target": "eGFR",
+      "relation": "calculates"
+    },
+    {
+      "source": "Albuminuria",
+      "target": "Stage 1",
+      "relation": "indicates"
+    },
+    {
+      "source": "Albuminuria",
+      "target": "Stage 2",
+      "relation": "indicates"
+    },
+    {
+      "source": "eGFR < 15",
+      "target": "Stage 5",
+      "relation": "defines"
+    },
+    {
+      "source": "eGFR 15-29",
+      "target": "Stage 4",
+      "relation": "defines"
+    },
+    {
+      "source": "eGFR 30-59",
+      "target": "Stage 3",
+      "relation": "defines"
+    },
+    {
+      "source": "eGFR 60-89",
+      "target": "Stage 2",
+      "relation": "defines"
+    },
+    {
+      "source": "eGFR >= 90",
+      "target": "Stage 1",
+      "relation": "defines"
+    },
+    {
+      "source": "Stage 1",
+      "target": "Stage 2",
+      "relation": "progresses_to"
+    },
+    {
+      "source": "Stage 1",
+      "target": "CVD Risk Reduction",
+      "relation": "requires_action"
+    },
+    {
+      "source": "Stage 2",
+      "target": "Stage 3",
+      "relation": "progresses_to"
+    },
+    {
+      "source": "Stage 2",
+      "target": "Slow Progression",
+      "relation": "requires_action"
+    },
+    {
+      "source": "Stage 3",
+      "target": "Stage 4",
+      "relation": "progresses_to"
+    },
+    {
+      "source": "Stage 3",
+      "target": "Manage Complications",
+      "relation": "requires_action"
+    },
+    {
+      "source": "Stage 4",
+      "target": "Stage 5",
+      "relation": "progresses_to"
+    },
+    {
+      "source": "Stage 4",
+      "target": "Nephrology Referral",
+      "relation": "requires_action"
+    },
+    {
+      "source": "Stage 4",
+      "target": "Dialysis Preparation",
+      "relation": "requires_action"
+    },
+    {
+      "source": "Stage 5",
+      "target": "Kidney Replacement",
+      "relation": "requires_action"
+    },
+    {
+      "source": "Hypertension",
+      "target": "Stage 3",
+      "relation": "accelerates"
+    },
+    {
+      "source": "Diabetes Mellitus",
+      "target": "Stage 1",
+      "relation": "primary_cause"
+    },
+    {
+      "source": "Chronic Kidney Disease",
+      "target": "Stages of CKD",
+      "relation": "defines"
+    },
+    {
+      "source": "Chronic kidney disease",
+      "target": "kidney damage or GFR < 60 mL/min/1.73 m\u00b2 for 3 months",
+      "relation": "defines"
+    },
+    {
+      "source": "Individuals at increased risk",
+      "target": "testing for markers of kidney damage",
+      "relation": "requires"
+    },
+    {
+      "source": "Individuals at increased risk",
+      "target": "program of risk factor reduction",
+      "relation": "defines"
+    },
+    {
+      "source": "Individuals found to have CKD",
+      "target": "evaluation and treatment as specified in Guideline 2",
+      "relation": "requires"
+    }
+  ]
+}

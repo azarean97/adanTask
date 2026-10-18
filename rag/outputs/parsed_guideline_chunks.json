@@ -1,0 +1,102 @@
+[
+  {
+    "page_summary": "This page outlines the guidelines for the definition and classification of stages of chronic kidney disease, emphasizing the importance of early detection and treatment.",
+    "elements": [
+      {
+        "type": "table",
+        "title": "Grading Rationale Statements",
+        "clinical_facts": [
+          "Grade S: Analysis of individual patient data from a single large, generalizable study of high methodological quality (e.g., NHANES III)",
+          "Grade C: Compilation of original articles (evidence tables)",
+          "Grade R: Review of reviews and selected original articles",
+          "Grade O: Opinion"
+        ],
+        "relationships": []
+      },
+      {
+        "type": "boxed_summary",
+        "title": "Definition and Stages of Chronic Kidney Disease",
+        "clinical_facts": [
+          "The presence of chronic kidney disease should be established based on kidney damage and level of kidney function (glomerular filtration rate [GFR]).",
+          "Among patients with chronic kidney disease, the stage of disease should be assigned."
+        ],
+        "relationships": []
+      }
+    ],
+    "page_num": 38
+  },
+  {
+    "page_summary": "This page outlines the stages of chronic kidney disease (CKD) according to the K/DOQI classification, detailing the relationship between kidney function and disease severity.",
+    "elements": [
+      {
+        "type": "table",
+        "title": "Stages of Chronic Kidney Disease",
+        "clinical_facts": [
+          "Stage 1: Kidney damage with normal or increased GFR (≥90 mL/min/1.73 m²)",
+          "Stage 2: Kidney damage with mild decreased GFR (60-89 mL/min/1.73 m²)",
+          "Stage 3: Moderate decreased GFR (30-59 mL/min/1.73 m²)",
+          "Stage 4: Severe decreased GFR (15-29 mL/min/1.73 m²)",
+          "Stage 5: Kidney failure (<15 mL/min or dialysis)"
+        ],
+        "relationships": [
+          {
+            "from": "Chronic Kidney Disease",
+            "relation": "defines",
+            "to": "Stages of CKD"
+          }
+        ]
+      }
+    ],
+    "page_num": 39
+  },
+  {
+    "page_summary": "This page outlines the stages of chronic kidney disease (CKD) and provides guidelines for management and referral based on glomerular filtration rate (GFR).",
+    "elements": [
+      {
+        "type": "table",
+        "title": "Stages of Chronic Kidney Disease: A Clinical Action Plan",
+        "clinical_facts": [
+          "Stage 1: GFR > 90 mL/min/1.73 m² - Diagnosis and treatment, treatment of comorbid conditions, slowing progression.",
+          "Stage 2: GFR 60-89 mL/min/1.73 m² - Estimating progression.",
+          "Stage 3: GFR 30-59 mL/min/1.73 m² - Evaluating and managing complications.",
+          "Stage 4: GFR 15-29 mL/min/1.73 m² - Preparation for kidney replacement therapy.",
+          "Stage 5: GFR < 15 mL/min/1.73 m² - Replacement (if symptoms present)."
+        ],
+        "relationships": [
+          {
+            "from": "Chronic kidney disease",
+            "relation": "defines",
+            "to": "kidney damage or GFR < 60 mL/min/1.73 m² for 3 months"
+          }
+        ]
+      },
+      {
+        "type": "boxed_summary",
+        "title": "Guideline 3: Individuals at Increased Risk of Chronic Kidney Disease",
+        "clinical_facts": [
+          "Individuals without kidney damage and with normal/elevated GFR may be at increased risk for CKD.",
+          "Assessment should be part of routine health encounters.",
+          "Individuals at risk should undergo testing for markers of kidney damage and GFR estimation."
+        ],
+        "relationships": [
+          {
+            "from": "Individuals at increased risk",
+            "relation": "requires",
+            "to": "testing for markers of kidney damage"
+          },
+          {
+            "from": "Individuals found to have CKD",
+            "relation": "requires",
+            "to": "evaluation and treatment as specified in Guideline 2"
+          },
+          {
+            "from": "Individuals at increased risk",
+            "relation": "defines",
+            "to": "program of risk factor reduction"
+          }
+        ]
+      }
+    ],
+    "page_num": 40
+  }
+]

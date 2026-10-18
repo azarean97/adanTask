@@ -1,0 +1,21 @@
+# Runs both projects:  docker compose up --build
+#   Medical RAG  -> http://localhost:5001
+#   CineAgent    -> http://localhost:5050
+# The API key is read from .env (copy .env.example to .env first).
+
+services:
+  rag:
+    build: ./rag
+    container_name: medical-rag
+    env_file: .env
+    ports:
+      - "${RAG_PORT:-5001}:5001"
+    restart: unless-stopped
+
+  nl2sql_agent:
+    build: ./nl2sql_agent
+    container_name: cineagent
+    env_file: .env
+    ports:
+      - "${AGENT_PORT:-5050}:5050"
+    restart: unless-stopped

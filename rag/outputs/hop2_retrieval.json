@@ -1,0 +1,462 @@
+{
+  "multihop_enabled": true,
+  "query": "Retrieve clinical guidelines for the management of Stage 4 Chronic Kidney Disease, including treatment recommendations for hypertension, diabetes management, and anemia management.",
+  "reasoning": {
+    "intermediate_reasoning": "The initial findings indicate that the patient is classified as having Stage 4 Chronic Kidney Disease (CKD) due to an estimated GFR of 37.4 mL/min/1.73m². However, specific treatment recommendations and management strategies for complications associated with Stage 4 CKD, particularly in the context of the patient's comorbidities (hypertension and diabetes), are not provided. Additionally, the management of anemia in this patient is also a critical aspect that needs to be addressed.",
+    "hop2_query": "Retrieve clinical guidelines for the management of Stage 4 Chronic Kidney Disease, including treatment recommendations for hypertension, diabetes management, and anemia management.",
+    "key_risk_factors": [
+      "hypertension",
+      "diabetes mellitus",
+      "anemia"
+    ]
+  },
+  "docs": [
+    {
+      "chunk_id": "p40_summary",
+      "page": 40,
+      "modality": "vlm_page_summary",
+      "title": "Guideline Page 40 Overview",
+      "text": "[Guideline Page 40 Overview]\nThis page outlines the stages of chronic kidney disease (CKD) and provides guidelines for management and referral based on glomerular filtration rate (GFR).",
+      "facts": [],
+      "triples": [],
+      "score": 6.0,
+      "retriever": "knowledge_graph",
+      "kg_subgraph": {
+        "nodes": [
+          {
+            "id": "Stage 5",
+            "label": "Stage 5 (Kidney Failure GFR < 15 / Dialysis)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "Kidney Replacement",
+            "label": "Kidney Replacement Therapy",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Nephrology Referral",
+            "label": "Referral to Nephrologist",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Chronic kidney disease",
+            "label": "Chronic kidney disease",
+            "type": "Concept",
+            "properties": {}
+          },
+          {
+            "id": "Stage 3",
+            "label": "Stage 3 (Moderate GFR 30-59)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "Anemia",
+            "label": "Anemia / Low Hemoglobin (hemo)",
+            "type": "Complication",
+            "properties": {}
+          },
+          {
+            "id": "Manage Complications",
+            "label": "Evaluating & Treating Complications",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Dialysis Preparation",
+            "label": "Vascular Access & Dialysis Preparation",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Hypertension",
+            "label": "Hypertension (htn)",
+            "type": "Comorbidity",
+            "properties": {}
+          },
+          {
+            "id": "Stage 4",
+            "label": "Stage 4 (Severe GFR 15-29)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "kidney damage or GFR < 60 mL/min/1.73 m² for 3 months",
+            "label": "kidney damage or GFR < 60 mL/min/1.73 m² for 3 months",
+            "type": "Concept",
+            "properties": {}
+          }
+        ],
+        "links": [
+          {
+            "source": "Chronic kidney disease",
+            "target": "kidney damage or GFR < 60 mL/min/1.73 m² for 3 months",
+            "relation": "defines"
+          },
+          {
+            "source": "Hypertension",
+            "target": "Stage 3",
+            "relation": "accelerates"
+          },
+          {
+            "source": "Stage 3",
+            "target": "Stage 4",
+            "relation": "progresses_to"
+          },
+          {
+            "source": "Stage 3",
+            "target": "Manage Complications",
+            "relation": "requires_action"
+          },
+          {
+            "source": "Stage 4",
+            "target": "Stage 5",
+            "relation": "progresses_to"
+          },
+          {
+            "source": "Stage 4",
+            "target": "Nephrology Referral",
+            "relation": "requires_action"
+          },
+          {
+            "source": "Stage 4",
+            "target": "Dialysis Preparation",
+            "relation": "requires_action"
+          },
+          {
+            "source": "Stage 5",
+            "target": "Kidney Replacement",
+            "relation": "requires_action"
+          }
+        ]
+      },
+      "rrf_score": 0.04335,
+      "provenance": [
+        {
+          "retriever": "dense",
+          "rank": 1,
+          "raw_score": 0.6954
+        },
+        {
+          "retriever": "bm25",
+          "rank": 1,
+          "raw_score": 12.4106
+        },
+        {
+          "retriever": "kg",
+          "rank": 5,
+          "raw_score": 6.0
+        }
+      ]
+    },
+    {
+      "chunk_id": "p40_elem_0",
+      "page": 40,
+      "modality": "vlm_table",
+      "title": "Stages of Chronic Kidney Disease: A Clinical Action Plan",
+      "text": "[TABLE: Stages of Chronic Kidney Disease: A Clinical Action Plan]\nClinical Facts:\n- Stage 1: GFR > 90 mL/min/1.73 m² - Diagnosis and treatment, treatment of comorbid conditions, slowing progression.\n- Stage 2: GFR 60-89 mL/min/1.73 m² - Estimating progression.\n- Stage 3: GFR 30-59 mL/min/1.73 m² - Evaluating and managing complications.\n- Stage 4: GFR 15-29 mL/min/1.73 m² - Preparation for kidney replacement therapy.\n- Stage 5: GFR < 15 mL/min/1.73 m² - Replacement (if symptoms present).\nClinical Relationships:\n- Chronic kidney disease -> [defines] -> kidney damage or GFR < 60 mL/min/1.73 m² for 3 months",
+      "facts": [
+        "Stage 1: GFR > 90 mL/min/1.73 m² - Diagnosis and treatment, treatment of comorbid conditions, slowing progression.",
+        "Stage 2: GFR 60-89 mL/min/1.73 m² - Estimating progression.",
+        "Stage 3: GFR 30-59 mL/min/1.73 m² - Evaluating and managing complications.",
+        "Stage 4: GFR 15-29 mL/min/1.73 m² - Preparation for kidney replacement therapy.",
+        "Stage 5: GFR < 15 mL/min/1.73 m² - Replacement (if symptoms present)."
+      ],
+      "triples": [
+        {
+          "from": "Chronic kidney disease",
+          "relation": "defines",
+          "to": "kidney damage or GFR < 60 mL/min/1.73 m² for 3 months"
+        }
+      ],
+      "score": 27.0,
+      "retriever": "knowledge_graph",
+      "kg_subgraph": {
+        "nodes": [
+          {
+            "id": "Stage 5",
+            "label": "Stage 5 (Kidney Failure GFR < 15 / Dialysis)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "Kidney Replacement",
+            "label": "Kidney Replacement Therapy",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Nephrology Referral",
+            "label": "Referral to Nephrologist",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Chronic kidney disease",
+            "label": "Chronic kidney disease",
+            "type": "Concept",
+            "properties": {}
+          },
+          {
+            "id": "Stage 3",
+            "label": "Stage 3 (Moderate GFR 30-59)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "Anemia",
+            "label": "Anemia / Low Hemoglobin (hemo)",
+            "type": "Complication",
+            "properties": {}
+          },
+          {
+            "id": "Manage Complications",
+            "label": "Evaluating & Treating Complications",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Dialysis Preparation",
+            "label": "Vascular Access & Dialysis Preparation",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Hypertension",
+            "label": "Hypertension (htn)",
+            "type": "Comorbidity",
+            "properties": {}
+          },
+          {
+            "id": "Stage 4",
+            "label": "Stage 4 (Severe GFR 15-29)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "kidney damage or GFR < 60 mL/min/1.73 m² for 3 months",
+            "label": "kidney damage or GFR < 60 mL/min/1.73 m² for 3 months",
+            "type": "Concept",
+            "properties": {}
+          }
+        ],
+        "links": [
+          {
+            "source": "Chronic kidney disease",
+            "target": "kidney damage or GFR < 60 mL/min/1.73 m² for 3 months",
+            "relation": "defines"
+          },
+          {
+            "source": "Hypertension",
+            "target": "Stage 3",
+            "relation": "accelerates"
+          },
+          {
+            "source": "Stage 3",
+            "target": "Stage 4",
+            "relation": "progresses_to"
+          },
+          {
+            "source": "Stage 3",
+            "target": "Manage Complications",
+            "relation": "requires_action"
+          },
+          {
+            "source": "Stage 4",
+            "target": "Stage 5",
+            "relation": "progresses_to"
+          },
+          {
+            "source": "Stage 4",
+            "target": "Nephrology Referral",
+            "relation": "requires_action"
+          },
+          {
+            "source": "Stage 4",
+            "target": "Dialysis Preparation",
+            "relation": "requires_action"
+          },
+          {
+            "source": "Stage 5",
+            "target": "Kidney Replacement",
+            "relation": "requires_action"
+          }
+        ]
+      },
+      "rrf_score": 0.04308,
+      "provenance": [
+        {
+          "retriever": "dense",
+          "rank": 4,
+          "raw_score": 0.6325
+        },
+        {
+          "retriever": "bm25",
+          "rank": 3,
+          "raw_score": 6.9166
+        },
+        {
+          "retriever": "kg",
+          "rank": 1,
+          "raw_score": 27.0
+        }
+      ]
+    },
+    {
+      "chunk_id": "p38_summary",
+      "page": 38,
+      "modality": "vlm_page_summary",
+      "title": "Guideline Page 38 Overview",
+      "text": "[Guideline Page 38 Overview]\nThis page outlines the guidelines for the definition and classification of stages of chronic kidney disease, emphasizing the importance of early detection and treatment.",
+      "facts": [],
+      "triples": [],
+      "score": 4.0,
+      "retriever": "knowledge_graph",
+      "kg_subgraph": {
+        "nodes": [
+          {
+            "id": "Stage 5",
+            "label": "Stage 5 (Kidney Failure GFR < 15 / Dialysis)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "Kidney Replacement",
+            "label": "Kidney Replacement Therapy",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Nephrology Referral",
+            "label": "Referral to Nephrologist",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Chronic kidney disease",
+            "label": "Chronic kidney disease",
+            "type": "Concept",
+            "properties": {}
+          },
+          {
+            "id": "Stage 3",
+            "label": "Stage 3 (Moderate GFR 30-59)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "Anemia",
+            "label": "Anemia / Low Hemoglobin (hemo)",
+            "type": "Complication",
+            "properties": {}
+          },
+          {
+            "id": "Manage Complications",
+            "label": "Evaluating & Treating Complications",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Dialysis Preparation",
+            "label": "Vascular Access & Dialysis Preparation",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Hypertension",
+            "label": "Hypertension (htn)",
+            "type": "Comorbidity",
+            "properties": {}
+          },
+          {
+            "id": "Stage 4",
+            "label": "Stage 4 (Severe GFR 15-29)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "kidney damage or GFR < 60 mL/min/1.73 m² for 3 months",
+            "label": "kidney damage or GFR < 60 mL/min/1.73 m² for 3 months",
+            "type": "Concept",
+            "properties": {}
+          }
+        ],
+        "links": [
+          {
+            "source": "Chronic kidney disease",
+            "target": "kidney damage or GFR < 60 mL/min/1.73 m² for 3 months",
+            "relation": "defines"
+          },
+          {
+            "source": "Hypertension",
+            "target": "Stage 3",
+            "relation": "accelerates"
+          },
+          {
+            "source": "Stage 3",
+            "target": "Stage 4",
+            "relation": "progresses_to"
+          },
+          {
+            "source": "Stage 3",
+            "target": "Manage Complications",
+            "relation": "requires_action"
+          },
+          {
+            "source": "Stage 4",
+            "target": "Stage 5",
+            "relation": "progresses_to"
+          },
+          {
+            "source": "Stage 4",
+            "target": "Nephrology Referral",
+            "relation": "requires_action"
+          },
+          {
+            "source": "Stage 4",
+            "target": "Dialysis Preparation",
+            "relation": "requires_action"
+          },
+          {
+            "source": "Stage 5",
+            "target": "Kidney Replacement",
+            "relation": "requires_action"
+          }
+        ]
+      },
+      "rrf_score": 0.04267,
+      "provenance": [
+        {
+          "retriever": "dense",
+          "rank": 2,
+          "raw_score": 0.654
+        },
+        {
+          "retriever": "bm25",
+          "rank": 2,
+          "raw_score": 7.0642
+        },
+        {
+          "retriever": "kg",
+          "rank": 6,
+          "raw_score": 4.0
+        }
+      ]
+    }
+  ],
+  "trace": {
+    "query": "Retrieve clinical guidelines for the management of Stage 4 Chronic Kidney Disease, including treatment recommendations for hypertension, diabetes management, and anemia management.",
+    "weights": {
+      "dense": 1.0,
+      "bm25": 0.8,
+      "kg": 0.9
+    },
+    "dense_count": 6,
+    "bm25_count": 6,
+    "kg_count": 6,
+    "total_fused": 3
+  }
+}

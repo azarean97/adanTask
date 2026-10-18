@@ -1,0 +1,24 @@
+{
+  "verdict": "revise",
+  "evidence_support_score": 0.9,
+  "staging_correct": false,
+  "unsupported_claims": [
+    "The estimated GFR of 37.4 mL/min/1.73m² falls within the range for Stage 4 CKD (15-29 mL/min/1.73m²)."
+  ],
+  "contradictions": [],
+  "revision_instructions": "The estimated GFR of 37.4 mL/min/1.73m² actually falls within Stage 3 CKD (30-59 mL/min/1.73m²). Please revise the staging to reflect this correctly.",
+  "citation_audit": [
+    {
+      "claim": "The patient has an estimated GFR of 37.4 mL/min/1.73m², which falls within the range for Stage 4 CKD (15-29 mL/min/1.73m²).",
+      "is_supported": false
+    },
+    {
+      "claim": "The presence of hypertension and diabetes further supports the diagnosis of CKD as these are significant risk factors.",
+      "is_supported": true
+    },
+    {
+      "claim": "The patient's urine albumin level of 3.0+ indicates kidney damage, confirming the CKD diagnosis as per KDIGO guidelines.",
+      "is_supported": true
+    }
+  ]
+}

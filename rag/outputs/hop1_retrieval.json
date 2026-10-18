@@ -1,0 +1,344 @@
+{
+  "query": "CKD classification stages GFR threshold 1.9 mg/dL albuminuria 3.0",
+  "docs": [
+    {
+      "chunk_id": "p39_elem_0",
+      "page": 39,
+      "modality": "vlm_table",
+      "title": "Stages of Chronic Kidney Disease",
+      "text": "[TABLE: Stages of Chronic Kidney Disease]\nClinical Facts:\n- Stage 1: Kidney damage with normal or increased GFR (≥90 mL/min/1.73 m²)\n- Stage 2: Kidney damage with mild decreased GFR (60-89 mL/min/1.73 m²)\n- Stage 3: Moderate decreased GFR (30-59 mL/min/1.73 m²)\n- Stage 4: Severe decreased GFR (15-29 mL/min/1.73 m²)\n- Stage 5: Kidney failure (<15 mL/min or dialysis)\nClinical Relationships:\n- Chronic Kidney Disease -> [defines] -> Stages of CKD",
+      "facts": [
+        "Stage 1: Kidney damage with normal or increased GFR (≥90 mL/min/1.73 m²)",
+        "Stage 2: Kidney damage with mild decreased GFR (60-89 mL/min/1.73 m²)",
+        "Stage 3: Moderate decreased GFR (30-59 mL/min/1.73 m²)",
+        "Stage 4: Severe decreased GFR (15-29 mL/min/1.73 m²)",
+        "Stage 5: Kidney failure (<15 mL/min or dialysis)"
+      ],
+      "triples": [
+        {
+          "from": "Chronic Kidney Disease",
+          "relation": "defines",
+          "to": "Stages of CKD"
+        }
+      ],
+      "score": 17.0,
+      "retriever": "knowledge_graph",
+      "kg_subgraph": {
+        "nodes": [
+          {
+            "id": "Stage 2",
+            "label": "Stage 2 (Mild GFR 60-89 with Kidney Damage)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "Stage 3",
+            "label": "Stage 3 (Moderate GFR 30-59)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "Stage 1",
+            "label": "Stage 1 (Normal/High GFR >= 90 with Kidney Damage)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "CVD Risk Reduction",
+            "label": "Cardiovascular Disease Risk Reduction",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Slow Progression",
+            "label": "Slowing Progression of Kidney Disease",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Albuminuria",
+            "label": "Albumin in Urine (al)",
+            "type": "DamageMarker",
+            "properties": {}
+          }
+        ],
+        "links": [
+          {
+            "source": "Albuminuria",
+            "target": "Stage 1",
+            "relation": "indicates"
+          },
+          {
+            "source": "Albuminuria",
+            "target": "Stage 2",
+            "relation": "indicates"
+          },
+          {
+            "source": "Stage 1",
+            "target": "Stage 2",
+            "relation": "progresses_to"
+          },
+          {
+            "source": "Stage 1",
+            "target": "CVD Risk Reduction",
+            "relation": "requires_action"
+          },
+          {
+            "source": "Stage 2",
+            "target": "Stage 3",
+            "relation": "progresses_to"
+          },
+          {
+            "source": "Stage 2",
+            "target": "Slow Progression",
+            "relation": "requires_action"
+          }
+        ]
+      },
+      "rrf_score": 0.04338,
+      "provenance": [
+        {
+          "retriever": "dense",
+          "rank": 2,
+          "raw_score": 0.5786
+        },
+        {
+          "retriever": "bm25",
+          "rank": 4,
+          "raw_score": 1.8515
+        },
+        {
+          "retriever": "kg",
+          "rank": 1,
+          "raw_score": 17.0
+        }
+      ]
+    },
+    {
+      "chunk_id": "p40_elem_0",
+      "page": 40,
+      "modality": "vlm_table",
+      "title": "Stages of Chronic Kidney Disease: A Clinical Action Plan",
+      "text": "[TABLE: Stages of Chronic Kidney Disease: A Clinical Action Plan]\nClinical Facts:\n- Stage 1: GFR > 90 mL/min/1.73 m² - Diagnosis and treatment, treatment of comorbid conditions, slowing progression.\n- Stage 2: GFR 60-89 mL/min/1.73 m² - Estimating progression.\n- Stage 3: GFR 30-59 mL/min/1.73 m² - Evaluating and managing complications.\n- Stage 4: GFR 15-29 mL/min/1.73 m² - Preparation for kidney replacement therapy.\n- Stage 5: GFR < 15 mL/min/1.73 m² - Replacement (if symptoms present).\nClinical Relationships:\n- Chronic kidney disease -> [defines] -> kidney damage or GFR < 60 mL/min/1.73 m² for 3 months",
+      "facts": [
+        "Stage 1: GFR > 90 mL/min/1.73 m² - Diagnosis and treatment, treatment of comorbid conditions, slowing progression.",
+        "Stage 2: GFR 60-89 mL/min/1.73 m² - Estimating progression.",
+        "Stage 3: GFR 30-59 mL/min/1.73 m² - Evaluating and managing complications.",
+        "Stage 4: GFR 15-29 mL/min/1.73 m² - Preparation for kidney replacement therapy.",
+        "Stage 5: GFR < 15 mL/min/1.73 m² - Replacement (if symptoms present)."
+      ],
+      "triples": [
+        {
+          "from": "Chronic kidney disease",
+          "relation": "defines",
+          "to": "kidney damage or GFR < 60 mL/min/1.73 m² for 3 months"
+        }
+      ],
+      "score": 16.0,
+      "retriever": "knowledge_graph",
+      "kg_subgraph": {
+        "nodes": [
+          {
+            "id": "Stage 2",
+            "label": "Stage 2 (Mild GFR 60-89 with Kidney Damage)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "Stage 3",
+            "label": "Stage 3 (Moderate GFR 30-59)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "Stage 1",
+            "label": "Stage 1 (Normal/High GFR >= 90 with Kidney Damage)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "CVD Risk Reduction",
+            "label": "Cardiovascular Disease Risk Reduction",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Slow Progression",
+            "label": "Slowing Progression of Kidney Disease",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Albuminuria",
+            "label": "Albumin in Urine (al)",
+            "type": "DamageMarker",
+            "properties": {}
+          }
+        ],
+        "links": [
+          {
+            "source": "Albuminuria",
+            "target": "Stage 1",
+            "relation": "indicates"
+          },
+          {
+            "source": "Albuminuria",
+            "target": "Stage 2",
+            "relation": "indicates"
+          },
+          {
+            "source": "Stage 1",
+            "target": "Stage 2",
+            "relation": "progresses_to"
+          },
+          {
+            "source": "Stage 1",
+            "target": "CVD Risk Reduction",
+            "relation": "requires_action"
+          },
+          {
+            "source": "Stage 2",
+            "target": "Stage 3",
+            "relation": "progresses_to"
+          },
+          {
+            "source": "Stage 2",
+            "target": "Slow Progression",
+            "relation": "requires_action"
+          }
+        ]
+      },
+      "rrf_score": 0.04303,
+      "provenance": [
+        {
+          "retriever": "dense",
+          "rank": 1,
+          "raw_score": 0.5917
+        },
+        {
+          "retriever": "bm25",
+          "rank": 6,
+          "raw_score": 1.128
+        },
+        {
+          "retriever": "kg",
+          "rank": 2,
+          "raw_score": 16.0
+        }
+      ]
+    },
+    {
+      "chunk_id": "p38_summary",
+      "page": 38,
+      "modality": "vlm_page_summary",
+      "title": "Guideline Page 38 Overview",
+      "text": "[Guideline Page 38 Overview]\nThis page outlines the guidelines for the definition and classification of stages of chronic kidney disease, emphasizing the importance of early detection and treatment.",
+      "facts": [],
+      "triples": [],
+      "score": 3.0,
+      "retriever": "knowledge_graph",
+      "kg_subgraph": {
+        "nodes": [
+          {
+            "id": "Stage 2",
+            "label": "Stage 2 (Mild GFR 60-89 with Kidney Damage)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "Stage 3",
+            "label": "Stage 3 (Moderate GFR 30-59)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "Stage 1",
+            "label": "Stage 1 (Normal/High GFR >= 90 with Kidney Damage)",
+            "type": "Stage",
+            "properties": {}
+          },
+          {
+            "id": "CVD Risk Reduction",
+            "label": "Cardiovascular Disease Risk Reduction",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Slow Progression",
+            "label": "Slowing Progression of Kidney Disease",
+            "type": "Action",
+            "properties": {}
+          },
+          {
+            "id": "Albuminuria",
+            "label": "Albumin in Urine (al)",
+            "type": "DamageMarker",
+            "properties": {}
+          }
+        ],
+        "links": [
+          {
+            "source": "Albuminuria",
+            "target": "Stage 1",
+            "relation": "indicates"
+          },
+          {
+            "source": "Albuminuria",
+            "target": "Stage 2",
+            "relation": "indicates"
+          },
+          {
+            "source": "Stage 1",
+            "target": "Stage 2",
+            "relation": "progresses_to"
+          },
+          {
+            "source": "Stage 1",
+            "target": "CVD Risk Reduction",
+            "relation": "requires_action"
+          },
+          {
+            "source": "Stage 2",
+            "target": "Stage 3",
+            "relation": "progresses_to"
+          },
+          {
+            "source": "Stage 2",
+            "target": "Slow Progression",
+            "relation": "requires_action"
+          }
+        ]
+      },
+      "rrf_score": 0.04216,
+      "provenance": [
+        {
+          "retriever": "dense",
+          "rank": 4,
+          "raw_score": 0.545
+        },
+        {
+          "retriever": "bm25",
+          "rank": 2,
+          "raw_score": 2.0591
+        },
+        {
+          "retriever": "kg",
+          "rank": 6,
+          "raw_score": 3.0
+        }
+      ]
+    }
+  ],
+  "trace": {
+    "query": "CKD classification stages GFR threshold 1.9 mg/dL albuminuria 3.0",
+    "weights": {
+      "dense": 1.0,
+      "bm25": 0.8,
+      "kg": 0.9
+    },
+    "dense_count": 6,
+    "bm25_count": 6,
+    "kg_count": 6,
+    "total_fused": 3
+  }
+}

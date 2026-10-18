@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini-PID-RAG | Clinical Decision Support & Multi-Hop Architecture</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header Bar -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo-badge">
+        <span class="logo-icon">🧬</span>
+        <div class="logo-text">
+          <h1>Mini-PID-RAG</h1>
+          <span class="subtitle">Nephrology Clinical Decision Support System</span>
+        </div>
+      </div>
+      <div class="model-tags">
+        <span class="badge badge-actor">KDIGO Clinical Decision Support</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <button id="btn-open-prompts" class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Edit System Prompts
+      </button>
+      <div class="system-status" id="system-status">
+        <span class="status-dot"></span>
+        <span id="status-label">Ready</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-layout">
+    <!-- Left Sidebar: Patient & Control Panel -->
+    <aside class="sidebar-panel">
+      <div class="card patient-selector-card">
+        <div class="card-header">
+          <h3>🩺 Select Clinical Patient Case</h3>
+          <span class="badge badge-accent">UCI CKD Dataset</span>
+        </div>
+        <div class="form-group">
+          <label for="benchmark-select">Preset Clinical Benchmarks:</label>
+          <select id="benchmark-select" class="form-select"></select>
+        </div>
+
+        <div class="divider"><span>OR CUSTOMIZE LAB VALUES</span></div>
+
+        <form id="patient-form" class="patient-grid">
+          <div class="form-item">
+            <label for="inp-age">Age (years)</label>
+            <input type="number" id="inp-age" value="62" min="1" max="100">
+          </div>
+          <div class="form-item">
+            <label for="inp-bp">Blood Pressure (mm/Hg)</label>
+            <input type="number" id="inp-bp" value="80" min="40" max="220">
+          </div>
+          <div class="form-item">
+            <label for="inp-sc">Serum Creatinine (mg/dL)</label>
+            <input type="number" id="inp-sc" step="0.1" value="1.8" min="0.2" max="25">
+          </div>
+          <div class="form-item">
+            <label for="inp-al">Urine Albumin (0 to 5+)</label>
+            <select id="inp-al" class="form-select">
+              <option value="0">0 (Normal)</option>
+              <option value="1">1+ (Mild)</option>
+              <option value="2" selected>2+ (Moderate)</option>
+              <option value="3">3+ (High)</option>
+              <option value="4">4+ (Severe)</option>
+            </select>
+          </div>
+          <div class="form-item">
+            <label for="inp-hemo">Hemoglobin (g/dL)</label>
+            <input type="number" id="inp-hemo" step="0.1" value="9.6" min="3" max="20">
+          </div>
+          <div class="form-item">
+            <label for="inp-htn">Hypertension</label>
+            <select id="inp-htn" class="form-select">
+              <option value="yes" selected>Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div class="form-item">
+            <label for="inp-dm">Diabetes Mellitus</label>
+            <select id="inp-dm" class="form-select">
+              <option value="yes" selected>Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+        </form>
+
+        <div class="egfr-preview-card">
+          <div class="egfr-title">Calculated eGFR (MDRD formula)</div>
+          <div class="egfr-value-row">
+            <span class="egfr-number" id="preview-egfr">38.4</span>
+            <span class="egfr-unit">mL/min/1.73m²</span>
+          </div>
+          <div class="egfr-stage-tag" id="preview-stage">Stage 3 (Moderate CKD)</div>
+        </div>
+
+        <div class="toggle-control-box">
+          <div class="toggle-label-wrap">
+            <span class="toggle-title">Multi-Hop Reasoning</span>
+            <span class="toggle-sub">2-Stage Query Synthesis</span>
+          </div>
+          <div class="toggle-action-wrap">
+            <label class="switch">
+              <input type="checkbox" id="chk-multihop" checked>
+              <span class="slider"></span>
+            </label>
+            <span id="multihop-status-badge" class="badge badge-vlm">ON</span>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 0.2rem;">
+          <label for="inp-clinical-query">Clinical Task Query / Directive:</label>
+          <textarea id="inp-clinical-query" class="form-select query-textarea" rows="2">Assess CKD status, determine KDIGO GFR stage, and synthesize evidence-grounded management plan.</textarea>
+        </div>
+
+        <button id="btn-run-pipeline" class="btn btn-primary btn-run">
+          <span class="spinner" id="run-spinner" style="display:none;"></span>
+          <svg id="run-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Run Decision Workflow
+        </button>
+      </div>
+    </aside>
+
+    <!-- Right Workspace: Workflow Stepper & Output Panels -->
+    <section class="workspace-panel">
+      <!-- Workflow Step Navigation Bar -->
+      <nav class="stepper-nav">
+        <button class="step-btn active" data-tab="tab-final">
+          <span class="step-num">★</span>
+          <span class="step-text">Diagnosis</span>
+        </button>
+        <button class="step-btn" data-tab="tab-vlm">
+          <span class="step-num">1</span>
+          <span class="step-text">VLM Parsing</span>
+        </button>
+        <button class="step-btn" data-tab="tab-kg">
+          <span class="step-num">2</span>
+          <span class="step-text">Knowledge Graph</span>
+        </button>
+        <button class="step-btn" data-tab="tab-retrieval">
+          <span class="step-num">3</span>
+          <span class="step-text">Retrieval</span>
+        </button>
+        <button class="step-btn" data-tab="tab-actor">
+          <span class="step-num">4</span>
+          <span class="step-text">Actor</span>
+        </button>
+        <button class="step-btn" data-tab="tab-critic">
+          <span class="step-num">5</span>
+          <span class="step-text">Critic</span>
+        </button>
+        <button class="step-btn" data-tab="tab-outputs">
+          <span class="step-num">📁</span>
+          <span class="step-text">Outputs</span>
+        </button>
+        <button class="step-btn" data-tab="tab-qa">
+          <span class="step-num">💬</span>
+          <span class="step-text">Ask Assistant</span>
+        </button>
+      </nav>
+
+      <!-- Content Panels -->
+      <div class="tab-content-area">
+
+        <!-- TAB QA: Natural Language Assistant (Router & Multi-Capability Q&A) -->
+        <div id="tab-qa" class="tab-pane">
+          <div class="card qa-card">
+            <div class="card-header">
+              <h3>💬 Natural Language Clinical Assistant</h3>
+              <span class="badge badge-accent">Multi-Capability Router</span>
+            </div>
+            <p class="qa-desc">
+              Ask any natural language question. The assistant automatically routes your inquiry to 
+              <strong>Document RAG</strong> (KDIGO guidelines with citations and missing-evidence protection), 
+              <strong>Database Statistics</strong> (400 patient records in UCI CKD dataset), 
+              <strong>Calculation Tools</strong> (MDRD eGFR formula), or <strong>Composite Synthesis</strong>.
+            </p>
+            
+            <div class="qa-presets">
+              <span class="preset-label">Sample Inquiries:</span>
+              <button class="preset-chip" data-q="How many patients in the dataset have both diabetes and hypertension, and what is the total patient count?">📊 Database: Diabetes & HTN count</button>
+              <button class="preset-chip" data-q="What is the definition and GFR threshold for Stage 4 CKD and what clinical action is required according to the guidelines?">📄 Guidelines: Stage 4 criteria</button>
+              <button class="preset-chip" data-q="Calculate eGFR for a 65-year-old with serum creatinine 2.4 mg/dL and tell me their stage">🧮 Tool: Compute eGFR</button>
+              <button class="preset-chip" data-q="What is the recommended pediatric dose of ibuprofen according to the KDIGO guidelines?">🛡️ Missing Evidence: Strict refusal</button>
+            </div>
+
+            <div class="qa-input-row">
+              <input type="text" id="qa-input" placeholder="Type a clinical, database, or guideline question..." />
+              <button id="qa-submit-btn" class="btn btn-primary">Ask</button>
+            </div>
+
+            <div id="qa-loading" class="qa-loading" style="display:none;">
+              <span class="spinner-small"></span> Routing inquiry and synthesizing answer...
+            </div>
+
+            <div id="qa-response-area" style="display:none;" class="qa-response-box">
+              <div class="qa-response-header">
+                <span id="qa-route-tag" class="badge badge-actor">ROUTE</span>
+                <span id="qa-source-tag" class="badge badge-accent">SOURCES</span>
+              </div>
+              <div id="qa-answer-text" class="qa-answer-content"></div>
+              <div id="qa-meta-details" class="qa-meta-details"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 0: Final Verified Decision (Default Display) -->
+        <div id="tab-final" class="tab-pane active">
+          <div id="final-empty-state" class="empty-state">
+            <div class="empty-icon">🩺</div>
+            <h3>Ready for Clinical Analysis</h3>
+            <p>Select a benchmark case or enter custom lab values, then click <strong>"Run Multi-Hop Decision Workflow"</strong> to execute the full pipeline.</p>
+          </div>
+
+          <div id="final-results-card" class="final-display" style="display:none;">
+            <!-- Hero Decision Banner -->
+            <div class="decision-hero">
+              <div class="decision-header">
+                <div>
+                  <span class="diag-label">VERIFIED CLINICAL DIAGNOSIS</span>
+                  <h2 id="final-diag-title">Chronic Kidney Disease (Stage 3)</h2>
+                </div>
+              </div>
+
+              <div class="diag-badges-row">
+                <div class="diag-chip chip-class" id="final-class-badge">CKD: YES</div>
+                <div class="diag-chip chip-stage" id="final-stage-badge">Stage 3 (Moderate)</div>
+                <div class="diag-chip chip-gfr" id="final-gfr-badge">G3 (30-59 mL/min)</div>
+                <div class="diag-chip chip-critic" id="final-critic-badge">Critic Verified ✓</div>
+              </div>
+            </div>
+
+            <!-- Clinical Task Prompt Directive & Few-Shot Exemplars -->
+            <div class="card directive-card">
+              <div class="directive-header">
+                <div class="directive-title-wrap">
+                  <span class="badge badge-actor">RAG Clinical Directive</span>
+                  <h4>Clinical Question & Pipeline Prompt</h4>
+                </div>
+                <button id="btn-toggle-prompt-view" class="btn btn-sm btn-outline">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <span id="toggle-prompt-btn-text">View Full Prompt</span>
+                </button>
+              </div>
+              <p id="clinical-question-display" class="directive-question">
+                Given patient clinical labs, retrieved KDIGO guidelines, and in-context reference exemplars from the patient dataset: determine whether the patient meets diagnostic criteria for Chronic Kidney Disease (CKD vs NOT_CKD), assign the precise KDIGO GFR stage and category (G1 to G5), evaluate risk factors, and synthesize an evidence-grounded action plan.
+              </p>
+
+              <!-- In-Context Few-Shot Exemplars from Patient Dataset -->
+              <div class="few-shot-section">
+                <div class="few-shot-header">
+                  <span class="few-shot-title">📚 In-Context Few-Shot Exemplars (UCI CKD Patient Dataset)</span>
+                  <span class="badge badge-accent">3 In-Context Archetypes</span>
+                </div>
+                <div id="few-shot-cards-grid" class="few-shot-grid">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+
+              <!-- Collapsible Full Prompt Executed View -->
+              <div id="executed-prompt-collapse" class="executed-prompt-box" style="display: none;">
+                <div class="executed-prompt-header">
+                  <span>Synthesized Actor Prompt (System Prompt + Patient Case + Few-Shots + KDIGO Evidence)</span>
+                </div>
+                <pre id="executed-prompt-text"></pre>
+              </div>
+            </div>
+
+            <!-- Action Plan & Rationale Grid -->
+            <div class="decision-body-grid">
+              <div class="card rationale-card">
+                <h3>📋 Clinical Rationale & Guidelines Alignment</h3>
+                <p id="final-rationale-text" class="rationale-content"></p>
+                
+                <h4 style="margin-top:1.5rem;">🔗 Grounded Evidence Citations:</h4>
+                <div id="final-citations-list" class="citations-tags"></div>
+              </div>
+
+              <div class="card action-plan-card">
+                <h3>⚡ Clinical Action Plan</h3>
+                <ul id="final-action-list" class="action-list"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 1: VLM Parsing -->
+        <div id="tab-vlm" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <h3>👁️ Visual Language Model (VLM) Document Parsing</h3>
+              <span class="badge badge-vlm">KDIGO Guideline Scanned Pages</span>
+            </div>
+            <p class="description-text">
+              Plain PDF text extractors fail on scanned tables and image-based guidelines.
+              The VLM inspects the rendered high-resolution page image, transcribes tables, and extracts structured clinical facts and directional triples.
+            </p>
+
+            <div class="page-selector-row">
+              <button class="btn btn-sm btn-outline active vlm-page-tab" data-page="39">Page 39 (Staging Table)</button>
+              <button class="btn btn-sm btn-outline vlm-page-tab" data-page="40">Page 40 (Action Plan Table)</button>
+              <button class="btn btn-sm btn-outline vlm-page-tab" data-page="38">Page 38 (Definition & Overview)</button>
+            </div>
+
+            <div class="vlm-split-view">
+              <div class="vlm-col-image">
+                <h4>Original Rendered PDF Page Image</h4>
+                <div class="img-container">
+                  <img id="vlm-page-img" src="/api/page_image/39" alt="KDIGO PDF Scanned Page">
+                </div>
+              </div>
+
+              <div class="vlm-col-data">
+                <div class="vlm-summary-box">
+                  <span class="vlm-summary-label">Page Summary</span>
+                  <p id="vlm-summary-text">Loading VLM extraction...</p>
+                </div>
+
+                <div class="vlm-sections-header">
+                  <h4>Extracted Guideline Elements & Directional Triples</h4>
+                </div>
+                <div id="vlm-structured-content" class="vlm-structured-content">
+                  <!-- Structured elements loaded here -->
+                </div>
+
+                <details class="vlm-raw-toggle">
+                  <summary>View Complete JSON Schema</summary>
+                  <div id="vlm-extracted-container" class="code-box">
+                    <pre id="vlm-extracted-json">// VLM parsed data will load here...</pre>
+                  </div>
+                </details>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: Knowledge Graph & Embeddings -->
+        <div id="tab-kg" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <h3>🕸️ Lexical Knowledge Graph & Vector Space</h3>
+              <span class="badge badge-embed">text-embedding-3-large + Graph Ontologies</span>
+            </div>
+            <p class="description-text">
+              Clinical knowledge is captured in dual representations: high-dimensional dense vectors and explicit relational graphs (entities, stages, biomarkers, complications, and clinical action plans).
+            </p>
+
+            <div class="kg-stats-row">
+              <div class="stat-box">
+                <span class="stat-number" id="kg-node-count">19</span>
+                <span class="stat-label">Graph Nodes</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-number" id="kg-edge-count">28</span>
+                <span class="stat-label">Relational Edges</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-number">3,072</span>
+                <span class="stat-label">Embedding Dimensions</span>
+              </div>
+              <div class="stat-box">
+                <span class="stat-number">Cached</span>
+                <span class="stat-label">SQLite Vectors</span>
+              </div>
+            </div>
+
+            <div class="graph-viewer-wrapper">
+              <div class="graph-viewer-header">
+                <h4>Interactive Knowledge Graph Visualizer</h4>
+                <div class="graph-legend">
+                  <span class="legend-dot dot-stage">Stage</span>
+                  <span class="legend-dot dot-biomarker">Biomarker</span>
+                  <span class="legend-dot dot-action">Action</span>
+                  <span class="legend-dot dot-complication">Complication</span>
+                </div>
+              </div>
+              <canvas id="kg-canvas" width="900" height="420"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: Multi-Hop Retrieval & RRF Fusion -->
+        <div id="tab-retrieval" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <h3>🔍 Multi-Hop Reasoning & Hybrid Fusion (RRF)</h3>
+              <span class="badge badge-accent">2-Hop Search + RRF Blending</span>
+            </div>
+            
+            <div class="hops-comparison-grid">
+              <!-- Hop 1 -->
+              <div class="hop-card">
+                <div class="hop-badge">HOP 1: Diagnostic Staging</div>
+                <div class="hop-query-box">
+                  <span class="q-label">Query:</span>
+                  <code id="hop1-query-text">Awaiting pipeline run...</code>
+                </div>
+                <h5>Retrieved Evidence (Hop 1):</h5>
+                <div id="hop1-evidence-list" class="evidence-list"></div>
+              </div>
+
+              <!-- Hop 2 -->
+              <div class="hop-card">
+                <div class="hop-badge hop2-badge">HOP 2: Targeted Action & Complications</div>
+                <div class="hop-query-box">
+                  <span class="q-label">Synthesized Query:</span>
+                  <code id="hop2-query-text">Awaiting pipeline run...</code>
+                </div>
+                <div class="intermediate-reasoning-box">
+                  <strong>Intermediate Reasoning:</strong>
+                  <p id="hop2-reasoning-text">The reasoner identifies initial staging and formulates a second-hop query for treatment protocols.</p>
+                </div>
+                <h5>Retrieved Evidence (Hop 2):</h5>
+                <div id="hop2-evidence-list" class="evidence-list"></div>
+              </div>
+            </div>
+
+            <h4 style="margin-top:2rem;">⚖️ Reciprocal Rank Fusion (RRF) Candidates</h4>
+            <div class="table-responsive">
+              <table class="table" id="rrf-table">
+                <thead>
+                  <tr>
+                    <th>Chunk ID</th>
+                    <th>Source Document</th>
+                    <th>RRF Score</th>
+                    <th>Dense Hit</th>
+                    <th>BM25 Hit</th>
+                    <th>KG Hit</th>
+                  </tr>
+                </thead>
+                <tbody id="rrf-table-body">
+                  <tr><td colspan="6" style="text-align:center;">Run pipeline to see ranked candidates</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: Actor (Answerer) -->
+        <div id="tab-actor" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <h3>🩺 Actor (Primary Clinical Answerer)</h3>
+              <span class="badge badge-actor">Initial Proposal Phase</span>
+            </div>
+            <p class="description-text">
+              The Actor ingests the patient case, multi-hop evidence, and context, proposing an initial diagnostic path, confidence score, and clinical action plan.
+            </p>
+
+            <div class="actor-output-card" id="actor-output-box">
+              <pre id="actor-json-dump">// Run workflow to view Actor output...</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: Critic (Auditor) -->
+        <div id="tab-critic" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <h3>⚖️ Critic (Clinical Audit & Verification Loop)</h3>
+              <span class="badge badge-critic">Strict Evidence Auditor</span>
+            </div>
+            <p class="description-text">
+              The Critic checks the Actor's proposed diagnosis against actual guideline evidence. If hallucination, incorrect staging, or unsupported claims are detected, it issues a <code>revise</code> verdict with corrective instructions.
+            </p>
+
+            <div class="critic-audit-grid">
+              <div class="critic-stat-card">
+                <span class="critic-label">Audit Verdict</span>
+                <span class="critic-verdict-badge" id="critic-verdict-display">PENDING</span>
+              </div>
+              <div class="critic-stat-card">
+                <span class="critic-label">Evidence Support Score</span>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" id="critic-support-bar" style="width: 0%;"></div>
+                </div>
+                <span class="progress-bar-value" id="critic-support-value">0.0</span>
+              </div>
+              <div class="critic-stat-card">
+                <span class="critic-label">Staging Correctness</span>
+                <span class="status-indicator-text" id="critic-staging-status">-</span>
+              </div>
+            </div>
+
+            <div class="critic-details-box">
+              <h4>Critic Audit Report & Revision Instructions:</h4>
+              <div id="critic-instructions-text" class="critique-instructions-panel">
+                Run workflow to see the Critic audit.
+              </div>
+
+              <h4 style="margin-top:1rem;">Evidence Grounding:</h4>
+              <p style="font-size: 0.72rem; color: #94a3b8; margin-top: 0.2rem;">Individual clinical claims and guideline sources verified for factual support:</p>
+              <ul id="critic-citations-audit-list" class="citations-audit-list"></ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 6: Outputs Explorer -->
+        <div id="tab-outputs" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <h3>📁 Saved Outputs Explorer</h3>
+              <span class="badge badge-accent">adan_tmp/outputs/</span>
+            </div>
+            <p class="description-text">
+              All pipeline stages systematically persist structured JSON outputs into the <code>adan_tmp/outputs/</code> directory. Select any file below to inspect its contents.
+            </p>
+
+            <div class="outputs-layout-grid">
+              <div class="outputs-list-col">
+                <h4>Generated Output Files</h4>
+                <div id="outputs-file-list" class="outputs-file-list">
+                  <div class="loading-text">Loading outputs list...</div>
+                </div>
+              </div>
+              <div class="outputs-preview-col">
+                <div class="outputs-viewer-header">
+                  <span id="active-output-filename">Select a file</span>
+                </div>
+                <div class="code-box">
+                  <pre id="output-file-content">// Output file content will be displayed here...</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Prompt Editor Modal -->
+  <div id="prompt-modal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <h3>⚙️ System Prompts Configuration</h3>
+          <span>Customize or test prompts dynamically without restarting the server</span>
+        </div>
+        <button id="btn-close-modal" class="modal-close">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="prompt-tabs">
+          <button class="p-tab-btn active" data-ptab="p-vlm">VLM Prompt</button>
+          <button class="p-tab-btn" data-ptab="p-mhop">Multi-Hop Prompt</button>
+          <button class="p-tab-btn" data-ptab="p-actor">Actor Prompt</button>
+          <button class="p-tab-btn" data-ptab="p-critic">Critic Prompt</button>
+        </div>
+
+        <div class="prompt-tab-contents">
+          <div id="p-vlm" class="p-pane active">
+            <label>Prompt for Vision Document Parsing (extracting tables, facts, triples):</label>
+            <textarea id="prompt-vlm-input" class="prompt-editor" rows="12"></textarea>
+          </div>
+          <div id="p-mhop" class="p-pane">
+            <label>Prompt for Multi-Hop Query Synthesis (Hop 1 -> Hop 2):</label>
+            <textarea id="prompt-mhop-input" class="prompt-editor" rows="12"></textarea>
+          </div>
+          <div id="p-actor" class="p-pane">
+            <label>Prompt for Actor Diagnostician (Clinical Answerer):</label>
+            <textarea id="prompt-actor-input" class="prompt-editor" rows="12"></textarea>
+          </div>
+          <div id="p-critic" class="p-pane">
+            <label>Prompt for Critic Auditor (Strict Verification Loop):</label>
+            <textarea id="prompt-critic-input" class="prompt-editor" rows="12"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="btn-reset-prompts" class="btn btn-secondary">Reset to Defaults</button>
+        <button id="btn-save-prompts" class="btn btn-primary">Save & Apply Prompts</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
